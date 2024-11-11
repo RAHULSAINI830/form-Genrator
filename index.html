@@ -1,0 +1,1956 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Fire Inspection Bill Generator</title>
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0px;
+            padding: 0;
+            background: #f9f9f9;
+        }
+
+        .navbar {
+            width: 98%;
+            background-color: #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            color: white;
+            overflow-x: hidden;
+            margin-bottom: 50px;
+
+        }
+
+        .navbar .logo img {
+            height: 30px;
+            width: 220px;
+        }
+
+        .navbar .button {
+            padding: 10px 20px;
+            background-color: #ee5566;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar .button:hover {
+            background-color: #d34c5a;
+        }
+
+
+        /* Header and Grid Selection Section */
+        .header-section,
+        .template-selection {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Grid Layout for Template Selection */
+        .grid-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+            padding-top: 200px;
+            padding-bottom: 200px;
+            margin-top: 100px;
+        }
+
+        /* Styling for dropdowns to match other form fields */
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+
+        /* Styling for Each Template Card */
+        .template-card {
+            width: 260px;
+            padding: 20px;
+            text-align: center;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Gradient background effect on hover */
+        .template-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            z-index: 0;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            border-radius: 15px;
+        }
+
+        .template-card:hover::before {
+            opacity: 0.15;
+        }
+
+        /* Title and Text Styling */
+        .template-card h2 {
+            font-size: 22px;
+            color: #ee5566;
+            margin-bottom: 10px;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+        }
+
+        .template-card p {
+            font-size: 16px;
+            color: #555;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hover Effects */
+        .template-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Adding icon to each card */
+        .template-card-icon {
+            font-size: 40px;
+            color: #ff7e5f;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Input styling for header section */
+        .header-section input[type="text"] {
+            width: 60%;
+            padding: 10px;
+            font-size: 24px;
+            text-align: center;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .left-panel,
+        .right-panel {
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background-color: white;
+        }
+
+        .left-panel {
+            background-color: #f5f5f5;
+            border-right: 2px solid #eee;
+            margin-bottom: 20px;
+            position: relative;
+            height: 100%;
+            max-height: 100vh;
+            overflow-y: auto;
+        }
+
+        .right-panel {
+            background-color: #fff;
+            margin-bottom: 20px;
+            min-height: 500px;
+            max-height: 100vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Title styles */
+        h2,
+        h3 {
+            color: #444;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .bii {
+            color: #444;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 100px;
+        }
+
+        label {
+            font-weight: 500;
+            margin-bottom: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 8px;
+            background: #fdfdfd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        /* Form fields */
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .form-group {
+            flex: 0 0 48%;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group input[type="text"],
+        .form-group select {
+            flex: 1;
+            /* Ensures both input and dropdown occupy equal space */
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #fff;
+            color: #ee5566;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #f5f5f5;
+        }
+
+        #searchBox {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .sticky-top {
+            position: sticky;
+            top: 0;
+            background-color: #f5f5f5;
+            z-index: 10;
+            padding-bottom: 10px;
+        }
+
+        .scrollable-questions {
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        /* Buttons for arrow and icons */
+        .arrow-btn {
+            border: none;
+            background-color: transparent;
+            font-size: 24px;
+            cursor: pointer;
+            color: #ee5566;
+            transition: transform 0.3s ease;
+            text-align: center;
+            margin: 0;
+        }
+
+        .arrow-btn:hover {
+            transform: scale(1.2);
+        }
+
+        /* Flex grid for table and form inputs */
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-wrapper input[type="text"] {
+            flex: 1;
+        }
+
+        .table-section {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .icon-btn {
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            color: #007bff;
+        }
+
+        .icon-btn.remove {
+            color: #ff4d4d;
+        }
+
+        /* Panel layout styling */
+        .page-section {
+            display: flex;
+            gap: 20px;
+        }
+
+        .left-panel {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .right-panel {
+            flex: 2;
+            min-width: 600px;
+            position: relative;
+        }
+
+        .logo-box {
+            width: 150px;
+            height: 100px;
+            border: 2px dashed #ccc;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            text-align: center;
+            line-height: 100px;
+            color: #999;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        img.uploaded-image {
+            width: 150px;
+            height: 100px;
+            object-fit: contain;
+            position: static;
+            display: block;
+        }
+
+        /* Dynamic form grid */
+        #generatedForm {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-start;
+        }
+
+        /* Form Container Styling */
+        #formContainer {
+            position: relative;
+            padding-bottom: 150px;
+            /* Space for the signature box */
+        }
+
+        /* Logo Box Styling */
+        .logo-box {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 150px;
+            height: 100px;
+            border: 2px dashed #ccc;
+            text-align: center;
+            line-height: 100px;
+            color: #999;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* Signature Box Styling */
+        .signature-box {
+            position: relative;
+            margin-top: 20px;
+            width: 150px;
+            height: 100px;
+            border: 2px dashed #ccc;
+            text-align: center;
+            line-height: 100px;
+            color: #999;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .uploaded-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .download-container {
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        #downloadDropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            z-index: 10;
+            width: 200px;
+        }
+
+        #downloadDropdown button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #ee5566;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #downloadDropdown button:hover {
+            background-color: #d34c5a;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <img src="ZenTrades.png" alt="Zen Services Logo">
+        </div>
+        <button class="button">Get Demo</button>
+    </header>
+
+    <!-- Page Title and Template Selection Grid -->
+    <!-- Updated Template Grid Container with 30 Templates -->
+    <div class="grid-container">
+        <div class="template-card" onclick="selectTemplate('6S_Audit')">
+            <h2>6S Audit Checklist Form</h2>
+            <p>Comprehensive checklist for 6S audit.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Airport_Services')">
+            <h2>Airport Services Checklist Form</h2>
+            <p>Checklist for airport service operations.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Commissioning')">
+            <h2>Commissioning Checklist Form</h2>
+            <p>Checklist for equipment commissioning.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Construction_Site')">
+            <h2>Construction Site Safety Checklist Form</h2>
+            <p>Checklist for workplace safety at construction sites.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('DTZ_Uwalk')">
+            <h2>DTZ Uwalk Mechanical Checklist Form</h2>
+            <p>Checklist for mechanical inspections.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Due_Diligence')">
+            <h2>Due Diligence Checklist Form</h2>
+            <p>Checklist for due diligence procedures.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Field_Level_Hazard')">
+            <h2>Field Level Job Hazard Assessment Form</h2>
+            <p>Checklist for job hazard assessment.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Gas_Installation')">
+            <h2>Gas Installation Inspection Checklist Form</h2>
+            <p>Checklist for gas installation safety checks.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Hazard_Assessment')">
+            <h2>Hazard Assessment Checklist Form</h2>
+            <p>Checklist for assessing workplace hazards.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Hotel_Room')">
+            <h2>Hotel Room Checklist Form</h2>
+            <p>Checklist for hotel room inspections.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Incident_First_Response')">
+            <h2>Incident Report First Response Checklist Form</h2>
+            <p>Checklist for immediate response to incidents.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Incident_Full_Investigation')">
+            <h2>Incident Full Investigation Report Checklist Form</h2>
+            <p>Checklist for thorough incident investigations.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Internal_ISM_Audit')">
+            <h2>Internal ISM Ship Audit Form</h2>
+            <p>Checklist for ISM ship audits.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('IPS_Harness_Lanyard')">
+            <h2>IPS Harness Lanyard Inspection Checklist Form</h2>
+            <p>Checklist for harness and lanyard inspections.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('IPS_Site_Audit')">
+            <h2>IPS Site Audit Form</h2>
+            <p>Checklist for IPS site audits.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Job_Trailer')">
+            <h2>Job Trailer Checklist Form</h2>
+            <p>Checklist for job trailer inspections.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Life_Safety_EOC')">
+            <h2>Life Safety EOC Survey Checklist Form</h2>
+            <p>Checklist for EOC life safety surveys.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Lockout_Tagout')">
+            <h2>Lockout Tagout Checklist Form</h2>
+            <p>Checklist for lockout/tagout procedures.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Monday_Standard_Work')">
+            <h2>Monday Standard Work Checklist Form</h2>
+            <p>Checklist for Monday standard work tasks.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Operational_Audit')">
+            <h2>Operational Audit Form</h2>
+            <p>Checklist for operational audits.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Pipeline_Safety_Audit')">
+            <h2>Pipeline Safety Audit Form</h2>
+            <p>Checklist for pipeline safety audits.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Site_Safety_Audit')">
+            <h2>Site Safety Audit Form</h2>
+            <p>Checklist for general site safety audits.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Trenching_Excavation')">
+            <h2>Trenching & Excavation Safety Checklist Form</h2>
+            <p>Checklist for trenching and excavation safety.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Warehouse_Walkthrough')">
+            <h2>Warehouse Walkthrough Checklist Form</h2>
+            <p>Checklist for warehouse inspections.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Branch_Manager')">
+            <h2>Branch Manager Inspection Checklist Form</h2>
+            <p>Checklist for branch manager inspections.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Building_Condition')">
+            <h2>Building Condition Assessment Checklist Form</h2>
+            <p>Checklist for building condition assessments.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Building_Inspection')">
+            <h2>Building Inspection Checklist Form</h2>
+            <p>Checklist for general building inspections.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Building_Maintenance')">
+            <h2>Building Maintenance Inspection Checklist Form</h2>
+            <p>Checklist for building maintenance checks.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Cleaning_Weekly_Site')">
+            <h2>Cleaning Weekly Site Inspection Checklist Form</h2>
+            <p>Checklist for weekly cleaning inspections.</p>
+        </div>
+        <div class="template-card" onclick="selectTemplate('Condition_Inspection')">
+            <h2>Condition Inspection Report Checklist Form</h2>
+            <p>Checklist for condition inspections.</p>
+        </div>
+    </div>
+
+    <button id="backButton" onclick="goBackToGrid()"
+        style="display:none; margin-bottom: 20px; padding: 10px 15px; background-color: #ee5566; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: 600;">←
+        Back</button>
+
+    <!-- Editable Header Section -->
+    <div class="header-section" id="formHeader" style="display:none;">
+
+        <input type="text" id="editableTitle" placeholder="Enter Bill Title Here" oninput="updateBillTitle()">
+    </div>
+
+    <div class="page-section" id="formPage" style="display:none;">
+        <!-- Left Panel: Question Selection -->
+        <div class="left-panel" id="leftPanel">
+            <!-- Sticky section: Search bar, add custom question, add table button -->
+            <div class="sticky-top">
+                <h2>Select Questions for Your Bill</h2>
+                <!-- Search bar for questions -->
+                <input type="text" id="searchBox" placeholder="Search questions..." onkeyup="filterQuestions()">
+
+                <!-- Add Custom Text Question -->
+                <div class="form-group">
+                    <h3>Add Custom Text Question</h3>
+                    <div class="input-wrapper">
+                        <input type="text" id="customQuestion" placeholder="Enter your custom text question">
+                        <button type="button" class="arrow-btn" onclick="addCustomQuestion()">→</button>
+                    </div>
+                </div>
+
+                <!-- Add Custom Radio Button Question -->
+                <div class="form-group">
+                    <h3>Add Custom Radio Question</h3>
+                    <div class="input-wrapper">
+                        <input type="text" id="customRadioQuestion" placeholder="Enter your custom radio question">
+                        <button type="button" class="arrow-btn" onclick="addCustomRadioQuestion()">→</button>
+                    </div>
+                </div>
+
+                <!-- Add Custom Dropdown Question -->
+                <div class="form-group">
+                    <h3>Add Custom Dropdown Question</h3>
+                    <div class="input-wrapper">
+                        <input type="text" id="customDropdownQuestion"
+                            placeholder="Enter your custom dropdown question">
+                        <button type="button" class="arrow-btn" onclick="addCustomDropdownQuestion()">→</button>
+                    </div>
+                </div>
+
+                <!-- Add Custom Checkbox Group Question -->
+                <div class="form-group">
+                    <h3>Add Custom Checkbox Group</h3>
+                    <div class="input-wrapper">
+                        <input type="text" id="customCheckboxQuestion"
+                            placeholder="Enter your custom checkbox group question">
+                        <button type="button" class="arrow-btn" onclick="addCustomCheckboxGroup()">→</button>
+                    </div>
+                </div>
+
+                <!-- Add Table Button -->
+                <div class="form-group">
+                    <button type="button" class="arrow-btn" onclick="addTable()">Add Table</button>
+                </div>
+            </div>
+
+            <!-- Scrollable question list -->
+
+
+        </div>
+
+        <!-- Right Panel: Generated Form -->
+        <div class="right-panel" id="formContainer">
+            <h2 id="billTitle" class="bii">Fire Inspection Bill</h2> <!-- Editable bill title -->
+
+            <!-- Logo Upload Box inside the form section -->
+            <div class="logo-box" id="logoBox" onclick="uploadLogo()">Click to add Logo</div>
+
+            <div id="generatedForm">
+                <!-- The dynamic form will appear here -->
+            </div>
+
+            <!-- Table section (hidden initially) -->
+            <div class="table-section" id="tableSection">
+                <h3>Customizable Table</h3>
+                <button class="icon-btn remove" onclick="removeTable()">-</button>
+                <table id="customTable">
+                    <thead>
+                        <tr>
+                            <th><input type="text" placeholder="Enter value"></th>
+                            <th><input type="text" placeholder="Enter value"></th>
+                            <th><input type="text" placeholder="Enter value"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" placeholder="Enter value"></td>
+                            <td><input type="text" placeholder="Enter value"></td>
+                            <td><input type="text" placeholder="Enter value"></td>
+                            <td>
+                                <button class="icon-btn" onclick="addRow()">+</button>
+                                <button class="icon-btn remove" onclick="removeRow(this)">-</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="icon-btn" onclick="addColumn()">+ Add Column</button>
+            </div>
+            <div class="signature-box" id="signatureBox" onclick="uploadSignature()">Click to Add Signature</div>
+
+
+            <div class="download-container" style="position: relative;">
+                <button id="downloadButton" onclick="toggleDropdown()">Download Bill ▼</button>
+                <div id="downloadDropdown" class="dropdown-menu" style="display: none;">
+                    <button onclick="downloadForm('png')">Download as PNG</button>
+                    <button onclick="downloadForm('pdf')">Download as PDF</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Script Imports -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+
+        <script>
+            const templates = {
+                "6S_Audit": [
+                    "Required safety information is posted?",
+                    "Random check of safety equipment?",
+                    "Basic health and safety training has been done?",
+                    "Unhealthy or unsafe conditions are promptly resolved?",
+                    "Is the area clear of any work not in use?",
+                    "Is the area clear of unused tools/equipment?",
+                    "Is all information current and applicable?",
+                    "Physical red tag process is in place?",
+                    "Are all required items located in a fixed location?",
+                    "Are frequently used items accessible?",
+                    "Is information for required tasks easily available?",
+                    "Are abnormal conditions easily identifiable?",
+                    "Is the area clean and fit for purpose?",
+                    "Are garbage and recyclables disposed of correctly?",
+                    "Abnormal conditions are escalated?",
+                    "Are cleaning materials fit for use?",
+                    "5S tasks are in place for maintaining the area?",
+                    "Clear visual management of the area is in place?",
+                    "Check staff are aware of local 5S standards?",
+                    "Is 5S discussed in team meetings?",
+                    "Are weekly audits scheduled for 5S activity?",
+                    "Audit results are posted within the communication cell?",
+                    "Have all identified actions been resolved?",
+                    "All standards are maintained or improved?",
+                    "Signature of On-site Representative",
+                    "Date",
+                    "Auditor's Signature",
+                    "Auditor's Name"
+                ],
+                "Airport_Services": [
+                    "Flight Number of Audited Flights",
+                    "Do desks open and close on time?",
+                    "Are company logos and branding correct?",
+                    "Are security questions displayed?",
+                    "Are excess baggage procedures followed?",
+                    "Do agents check tickets and passports?",
+                    "If DCS used, which system is it?",
+                    "Are unruly passenger procedures followed?",
+                    "Is cabin baggage viewed, weighed, and tagged?",
+                    "Do baggage belts run without stoppages?",
+                    "Are there enough AMDs for passenger numbers?",
+                    "Are there enough baggage X-ray machines?",
+                    "Are sufficient immigration control channels open?",
+                    "Are separate Schengen channels available?",
+                    "Are the departure lounge FIDS and gate screens correct?",
+                    "Do boarding staff arrive at gate on time?",
+                    "Are PRMs identified and pre-boarded?",
+                    "Is there communication with the aircraft regarding boarding time?",
+                    "Correct and clear boarding announcements?",
+                    "Are there sufficient buses for remote departures?",
+                    "Are passports checked against boarding cards?",
+                    "Is the IATA DG manual available on station?",
+                    "Has the team leader briefed the team?",
+                    "Was a pre-arrival FOD check performed?",
+                    "Signature",
+                    "Date",
+                    "Name of Inspector",
+                    "Company & Position"
+                ],
+                "Commissioning": [
+                    "Permanent labels affixed?",
+                    "Casing condition good?",
+                    "Access doors close tightly?",
+                    "Vibration isolation equipment installed?",
+                    "Sound attenuation installed?",
+                    "Thermal insulation properly installed?",
+                    "Instrumentation installed according to specification?",
+                    "Filters installed and efficiency noted?",
+                    "Sensors calibrated and secure?",
+                    "Piping and coils checked for leaks?",
+                    "Dampers close tightly?",
+                    "Motors: premium efficiency verified?",
+                    "Refrigerant sight glass clear of bubbles?",
+                    "Crankcase heater operational?",
+                    "Condenser coils clean?",
+                    "Correct oil level verified?",
+                    "Full load running amps recorded?",
+                    "Signature of Inspector",
+                    "Date"
+                ],
+                "Construction_Site": [
+                    "Hazard board and signage up-to-date?",
+                    "Environmental plans in place?",
+                    "Safety inductions for all on site?",
+                    "Offices clean and well-lit?",
+                    "Correct footwear being worn?",
+                    "PPE (Glasses, ear muffs, vests, masks) used?",
+                    "Fire extinguishers fully charged?",
+                    "Emergency and fire prevention plans available?",
+                    "Signature of Inspector",
+                    "Date"
+                ],
+                "DTZ_Uwalk": [
+                    "Lockout/Tagout procedures correct?",
+                    "Confined Space Entry permits posted?",
+                    "Hot Work Permit posted?",
+                    "Spills corrected?",
+                    "Tripping hazards identified?",
+                    "Housekeeping maintained?",
+                    "Guards and barriers in place?",
+                    "Hard hats used?",
+                    "Safety glasses and face shields used?",
+                    "Body movement checked for safety?",
+                    "Signature",
+                    "Print Name"
+                ],
+                "Due_Diligence": [
+                    "Subscribed to latest OHS News?",
+                    "Conducted CRAW risk assessment workshop?",
+                    "Compiled and updated risk register?",
+                    "Site inspections conducted weekly?",
+                    "Understanding of works and associated hazards?",
+                    "Maintained communication with team members?",
+                    "Reported all notifiable incidents immediately?",
+                    "Signature",
+                    "Print Name",
+                    "Date"
+                ],
+                "Field_Level_Hazard": [
+                    "Date",
+                    "Buried pipelines identified?",
+                    "Electricity hazards checked?",
+                    "Heat stress mitigated?",
+                    "Noise levels monitored?",
+                    "Fall protection in place?",
+                    "Scaffolds inspected?",
+                    "Heavy lifting hazards identified?",
+                    "Signature of Inspector",
+                    "Date"
+                ],
+                "Gas_Installation": [
+                    "Meter installation accessible?",
+                    "Meter room ventilated?",
+                    "No flammable substances stored in meter room?",
+                    "Pipework cross-bonded?",
+                    "Control valves labeled?",
+                    "Gas soundness check satisfactory?",
+                    "Signature",
+                    "Print Name",
+                    "Date"
+                ],
+                "Hazard_Assessment": [
+                    "Work area clean?",
+                    "Air quality monitored?",
+                    "Noise levels acceptable?",
+                    "Fall protection required?",
+                    "Scaffold inspected?",
+                    "Access limited?",
+                    "Electrical hazards identified?",
+                    "Signature",
+                    "Print Name",
+                    "Date"
+                ],
+                "Hotel_Room": [
+                    "Doors functional?",
+                    "Light switches working?",
+                    "Windows clean?",
+                    "Drapes in good condition?",
+                    "Air conditioning filters clean?",
+                    "Beds properly made?",
+                    "Pillows fluffed?",
+                    "Bathroom free of odors?",
+                    "Signature of Inspector",
+                    "Date"
+                ],
+                "Incident_First_Response": [
+                    "Site/Project Name",
+                    "Contact Information",
+                    "Date & Time of Incident",
+                    "Incident Type?",
+                    "Immediate medical attention required?",
+                    "Describe what happened.",
+                    "Weather conditions at the time?",
+                    "Evidence attached?",
+                    "Signature of Reporter",
+                    "Date"
+                ],
+                "Incident_Full_Investigation": [
+                    "Site/Project Name",
+                    "Incident Severity?",
+                    "Timeline of events?",
+                    "Root cause identified?",
+                    "Further action required?",
+                    "Signature of Investigator",
+                    "Sign Off"
+                ],
+                "Internal_ISM_Audit": [
+                    "Ship's name",
+                    "Are ISM Manuals up to date?",
+                    "Emergency Manual available?",
+                    "Certificates not overdue?",
+                    "Incidents promptly reported?",
+                    "Signature",
+                    "Date"
+                ],
+                "IPS_Harness_Lanyard": [
+                    "Label attached to harness?",
+                    "Label fully legible?",
+                    "HARNESS Date of Manufacture?",
+                    "HARNESS Serial #?",
+                    "HARNESS Model #?",
+                    "LANYARD Date of Manufacture?",
+                    "LANYARD Serial #?",
+                    "LANYARD Model #?",
+                    "Buckles in place?",
+                    "D Rings in place?",
+                    "Back pad in place?",
+                    "Loop keepers in place?",
+                    "Any damaged or worn parts?",
+                    "Any broken or bent parts?",
+                    "All buckle springs intact?",
+                    "Any sharp edges?",
+                    "Any burrs?",
+                    "Any parts distorted or out of shape?",
+                    "Any cracks?",
+                    "Any corrosion?",
+                    "Any cuts?",
+                    "Webbing frayed?",
+                    "Any broken fibers?",
+                    "Any broken stitches?",
+                    "Any tears?",
+                    "Any abrasions?",
+                    "Any mold?",
+                    "Any burns?",
+                    "Signature of Inspector",
+                    "Inspector's Name",
+                    "Date"
+                ],
+                "IPS_Site_Audit": [
+                    "Pre-Trip inspection conducted?",
+                    "Journey management meeting held?",
+                    "Equipment secured by cargo net or straps?",
+                    "Tractor and trailer paperwork available?",
+                    "Drivers' record of duty status current?",
+                    "Registration current on trailer and tractor?",
+                    "Annual inspection current on tractor and trailer?",
+                    "Insurance certificate available?",
+                    "5# Fire extinguisher in cab and properly mounted?",
+                    "Hazardous material paperwork in vehicle?",
+                    "Job hazards identified?",
+                    "PIC identified?",
+                    "JSA completed and signed?",
+                    "Crew working safely?",
+                    "Hard hats worn?",
+                    "Safety glasses used?",
+                    "Hand protection used?",
+                    "Gas monitors in use?",
+                    "Crane inspection conducted?",
+                    "Visible leaks on equipment?",
+                    "Equipment clean?",
+                    "Lights and reflectors working?",
+                    "Windshield in good condition?",
+                    "Chock blocks in vehicle?",
+                    "Mud flaps in good condition?",
+                    "Signature",
+                    "Print Name",
+                    "Date"
+                ],
+                "Job_Trailer": [
+                    "Job Trailer per spec section 01500?",
+                    "Equipment charging area with power?",
+                    "Open tops set with signs and fence?",
+                    "Adequate storage containers?",
+                    "BMPs in place as required?",
+                    "First Aid Kit available?",
+                    "Fire extinguisher available?",
+                    "Bloodborne pathogen kit available?",
+                    "Spill kit available?",
+                    "Prints available (full, half, stamped)?",
+                    "Site-specific safety program in place?",
+                    "MSDS available?",
+                    "Hot Works Permits available?",
+                    "Morning communication meeting forms completed?",
+                    "Job site sign-in sheets available?",
+                    "Inspections up to date?",
+                    "Hazardous Waste Management Plan in place?",
+                    "OSHA 3000 log maintained?",
+                    "Signature",
+                    "Print Name",
+                    "Date"
+                ],
+                "Life_Safety_EOC": [
+                    "Hospital maintains all grounds and equipment?",
+                    "Reconstruction risk assessment conducted?",
+                    "Daily exit inspections performed?",
+                    "Temporary fire alarm systems in place?",
+                    "Additional firefighting equipment available?",
+                    "Temporary construction partitions used?",
+                    "Increased surveillance implemented?",
+                    "Fire drills conducted once per shift per quarter?",
+                    "Supervisory signal devices tested quarterly?",
+                    "Fire alarms tested annually?",
+                    "Signature",
+                    "Print Name",
+                    "Date"
+                ],
+                "Lockout_Tagout": [
+                    "Nature of work and hazardous energy sources identified?",
+                    "All nonessential items removed from work area?",
+                    "All machine components operationally intact?",
+                    "All affected employees notified of lockout/tagout removal?",
+                    "Knowledge of Lockout/Tagout procedures verified?",
+                    "Sources of power checked before shutdown?",
+                    "Equipment isolated by turning off main power source?",
+                    "Lockout/tagout devices applied and verified?",
+                    "Energy restored properly?",
+                    "Signature of Inspector",
+                    "Inspector's Name",
+                    "Date"
+                ],
+                "Monday_Standard_Work": [
+                    "Meeting time set?",
+                    "All functions represented?",
+                    "Open Action Items reviewed?",
+                    "Pipedrive updated with open orders?",
+                    "Past-due items assigned in Basecamp?",
+                    "Gemba Walk Key Elements checked?",
+                    "Expected and Actual output posted hourly?",
+                    "Kits complete including impellers and motors?",
+                    "QA evidence of inspections provided?",
+                    "Rework causes identified?",
+                    "Daily cleaning schedule posted?",
+                    "Signature of GM",
+                    "GM Name",
+                    "Date"
+                ],
+                "Operational_Audit": [
+                    "Employees using proper PPE?",
+                    "Employees have a plan of work?",
+                    "Ramp activity pre-planned?",
+                    "FOD walks conducted?",
+                    "Safety zone clear before aircraft arrival?",
+                    "Aircraft properly unloaded and loaded?",
+                    "Wing walkers used?",
+                    "Potable water serviced?",
+                    "Training records reviewed?",
+                    "Signature",
+                    "Print Name",
+                    "Date"
+                ],
+                "Pipeline_Safety_Audit": [
+                    "Emergency Action Plan in place?",
+                    "Spill Response Kit available?",
+                    "Certified Responders identified?",
+                    "MSDS reviewed?",
+                    "Containers labeled properly?",
+                    "Respiratory Program in place?",
+                    "PPE checked (Hard Hat, Eye/Face, Hand)?",
+                    "Excavation Checklist completed?",
+                    "Fall Protection inspected?",
+                    "Fire suppression equipment available?",
+                    "Access/Egress Points verified?",
+                    "Signature",
+                    "Print Name",
+                    "Date"
+                ],
+                "Site_Safety_Audit": [
+                    "OSHA Postings visible?",
+                    "Emergency numbers posted?",
+                    "First aid kits adequately supplied?",
+                    "Forklift and Crane Inspections completed?",
+                    "Work areas orderly?",
+                    "Electrical panels labeled?",
+                    "Lockout/Tagout procedures utilized?",
+                    "Proper PPE worn (Hard hats, Gloves, Respirators)?",
+                    "Fire extinguishers inspected?",
+                    "Confined space permits posted?",
+                    "Signature",
+                    "Print Name",
+                    "Date"
+                ],
+                "Trenching_Excavation": [
+                    "Competent Person trained in soil analysis?",
+                    "Employees protected from rock/soil hazards?",
+                    "Spoiled materials set back 2 feet from edge?",
+                    "Ladders secure and extend 3 feet above edge?",
+                    "Atmosphere tested for oxygen deficiency?",
+                    "PPE and rescue equipment available?",
+                    "Shield system installed?",
+                    "Signature of Inspector",
+                    "Inspector's Name",
+                    "Date"
+                ],
+                "Warehouse_Walkthrough": [
+                    "Aisles marked and in good condition?",
+                    "Work areas clean?",
+                    "Floors smooth and obstruction-free?",
+                    "Building exits marked?",
+                    "Fire extinguishers accessible?",
+                    "Foot protection required?",
+                    "Signature of Inspector",
+                    "Inspector's Name",
+                    "Date"
+                ],
+                "Branch_Manager": [
+                    "Two employees performing the job as required?",
+                    "Employee(s) maintain neat uniform and appearance?",
+                    "Site safety meeting held (if required)?",
+                    "Employee(s) wearing required PPE?",
+                    "Employee(s) have gear bags onsite?",
+                    "Employee(s) using proper lifting techniques?",
+                    "Employee(s) know location of emergency/spill control equipment?",
+                    "Waste bulking checklist used and signed?",
+                    "Drums labeled appropriately?",
+                    "Vehicle placarded properly?",
+                    "Load secured?",
+                    "Manifest(s) completed accurately?",
+                    "Cab and truck clean?",
+                    "Employee(s) cooperative and professional?",
+                    "Positive attitude maintained?",
+                    "Inspected by (Inspector Name)",
+                    "Employee signature",
+                    "Date"
+                ],
+                "Building_Condition": [
+                    "Roads condition?",
+                    "Parking and pavement condition?",
+                    "Signage in good condition?",
+                    "Fencing and irrigation maintained?",
+                    "Stormwater drainage adequate?",
+                    "Sewerage system functional?",
+                    "Erosion control measures in place?",
+                    "Landscaping well maintained?",
+                    "Foundations in good condition?",
+                    "Walls, columns, and beams intact?",
+                    "Electrical wiring and sockets functional?",
+                    "Emergency generators tested?",
+                    "Fire alarms functional?",
+                    "Air and water quality adequate?",
+                    "Compliance with IBC, IRC, IEBC?",
+                    "Inspector Name",
+                    "Signature",
+                    "Date"
+                ],
+                "Building_Inspection": [
+                    "Walls free of faults or damage?",
+                    "Windows and frames in good condition?",
+                    "Blinds and shades functional?",
+                    "Doors and frames in good condition?",
+                    "Painted surfaces fresh?",
+                    "Safe access to the roof?",
+                    "Roof walkway condition?",
+                    "Fences, driveways, and car parks in good condition?",
+                    "Internal office condition?",
+                    "Kitchen appliances clean and operational?",
+                    "Evidence of pest infestation?",
+                    "Date of last pest control treatment?",
+                    "Operational fire/EWIS panel on site?",
+                    "Inspector Name",
+                    "Date"
+                ],
+                "Building_Maintenance": [
+                    "Property currently rented?",
+                    "Street number displayed clearly?",
+                    "Mailbox in good condition?",
+                    "Driveway in good condition?",
+                    "Front garden well maintained?",
+                    "Front door in good condition?",
+                    "Smoke alarm installed and functional?",
+                    "Kitchen sink taps updated?",
+                    "Exhaust fan working properly?",
+                    "Oven in good condition?",
+                    "Bathroom tiling in good condition?",
+                    "Laundry tub condition?",
+                    "Hot water service functional?",
+                    "Exterior walls condition?",
+                    "Roof condition?",
+                    "Termite inspections up to date?",
+                    "Inspector Name",
+                    "Date"
+                ],
+                "Cleaning_Weekly_Site": [
+                    "Entries and exits in good condition?",
+                    "External glass clean (shop fronts)?",
+                    "Light diffusers and covers clean?",
+                    "Balustrades and handrails in good condition?",
+                    "Walls and columns clean?",
+                    "Cobwebs and graffiti removed?",
+                    "Overall appearance satisfactory?",
+                    "Floor surfaces clean?",
+                    "Tables and chairs clean?",
+                    "Public toilets clean (male, female, disabled)?",
+                    "Vents and outlets in good condition?",
+                    "Loading dock and rubbish bin room clean?",
+                    "Centre management offices clean?",
+                    "Comments section for additional notes",
+                    "Inspector Name",
+                    "Date"
+                ],
+                "Condition_Inspection": [
+                    "Trash can secured?",
+                    "Driveway condition?",
+                    "Roof condition?",
+                    "Pressure tanks and well condition?",
+                    "Doors, ceilings, and floors in good condition?",
+                    "Microwave, refrigerator, and stove condition?",
+                    "Master bedroom and bathroom condition?",
+                    "Guest bathroom condition?",
+                    "Laundry room condition?",
+                    "Garage overhead door condition?",
+                    "Smoke detector functional?",
+                    "Inspector Name",
+                    "Date"
+                ]
+                // Continue with remaining templates similarly...
+            };
+
+
+            let manualQuestions = [];
+            let addedQuestions = [];
+            let draggedItem = null;
+            let selectedTemplate = null;
+            const MAX_OPTIONS = 5;
+            const templateTables = {};
+
+
+            // Load question selections from local storage
+            let questionSelections = JSON.parse(localStorage.getItem("questionSelections")) || {};
+
+            // Function to update the bill title and limit its length
+            function updateBillTitle() {
+                const titleInput = document.getElementById('editableTitle');
+                let title = titleInput.value.trim();
+                if (title.split(" ").length > 6 || title.length > 35) {
+                    titleInput.value = title.substring(0, 35).split(" ").slice(0, 6).join(" ");
+                    title = titleInput.value;
+                }
+                document.getElementById('billTitle').innerText = title || 'Fire Inspection Bill';
+            }
+            function addDragAndDropHandlers() {
+                const draggableItems = document.querySelectorAll('#generatedForm .form-group');
+                draggableItems.forEach(item => {
+                    item.setAttribute("draggable", "true");
+                    item.addEventListener('dragstart', dragStart);
+                    item.addEventListener('dragover', dragOver);
+                    item.addEventListener('drop', drop);
+                    item.addEventListener('dragend', dragEnd);
+                });
+            }
+            function dragStart(event) {
+                draggedItem = event.target;
+                event.dataTransfer.effectAllowed = 'move';
+                setTimeout(() => {
+                    draggedItem.style.display = 'none';
+                }, 0);
+            }
+
+            function dragOver(event) {
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'move';
+            }
+
+            function drop(event) {
+                event.preventDefault();
+                const dropTarget = event.target.closest('.form-group');
+                const container = document.getElementById('generatedForm');
+
+                if (draggedItem && dropTarget && draggedItem !== dropTarget && container.contains(dropTarget)) {
+                    container.insertBefore(draggedItem, dropTarget.nextSibling);
+                }
+            }
+
+
+            function dragEnd() {
+                draggedItem.style.display = 'block';
+                draggedItem = null;
+            }
+
+            // Show the form and load selected questions for the chosen template
+            function selectTemplate(templateType) {
+                selectedTemplate = templateType;
+
+                // Update the URL with the template name
+                const url = new URL(window.location);
+                url.searchParams.set("template", templateType);
+                window.history.pushState({}, "", url);
+
+                // Hide the template selection and show the form
+                document.querySelector(".grid-container").style.display = "none";
+                document.getElementById("formPage").style.display = "flex";
+                document.getElementById("formHeader").style.display = "block";
+                document.getElementById("backButton").style.display = "inline-block";
+
+                // Convert the template name to a readable format (e.g., "6S_Audit" to "6S Audit")
+                const formTitle = templateType.replace(/_/g, ' ');
+
+                // Update H1 title and input placeholder dynamically
+                document.getElementById("billTitle").innerText = formTitle;
+                document.getElementById("editableTitle").value = formTitle;
+
+                // Load previous selections for this template
+                addedQuestions = questionSelections[templateType] || templates[templateType];
+                renderSelectedQuestions();
+                updateBillTitle();
+            }
+
+
+            function checkUrlForTemplate() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const template = urlParams.get("template");
+
+                if (template && templates[template]) {
+                    selectTemplate(template);
+                }
+            }
+            document.addEventListener("DOMContentLoaded", () => {
+                checkUrlForTemplate();
+                addDragAndDropHandlers();
+                updateBillTitle();
+            });
+
+            // Save selections and return to the template selection grid
+            function goBackToGrid() {
+                questionSelections[selectedTemplate] = [...addedQuestions];
+                localStorage.setItem("questionSelections", JSON.stringify(questionSelections));
+
+                document.getElementById("formPage").style.display = "none";
+                document.getElementById("formHeader").style.display = "none";
+                document.querySelector(".grid-container").style.display = "flex";
+                document.getElementById("backButton").style.display = "none";
+            }
+
+            // Add a selected question to the form
+            function addSelectedQuestion(checkbox) {
+                const questionText = checkbox.value;
+                const formContainer = document.getElementById('generatedForm');
+
+                if (checkbox.checked && !addedQuestions.includes(questionText)) {
+                    addedQuestions.push(questionText);
+                    const formGroup = createQuestionGroup(questionText);
+                    formContainer.appendChild(formGroup);
+                } else if (!checkbox.checked && addedQuestions.includes(questionText)) {
+                    removeQuestionFromForm(questionText);
+                }
+            }
+
+            // Remove a question from the form by its text value
+            function removeQuestionFromForm(questionText) {
+                const formContainer = document.getElementById('generatedForm');
+                const formGroups = formContainer.querySelectorAll('.form-group');
+                formGroups.forEach(group => {
+                    const label = group.querySelector('label');
+                    if (label && label.textContent === questionText) {
+                        formContainer.removeChild(group);
+                        addedQuestions = addedQuestions.filter(q => q !== questionText);
+                    }
+                });
+            }
+
+            // Render selected questions in the form, based on saved selections
+            function renderSelectedQuestions() {
+                const formContainer = document.getElementById('generatedForm');
+                formContainer.innerHTML = ""; // Clear previous content
+                addedQuestions.forEach(questionText => {
+                    const checkbox = document.querySelector(`input[value="${questionText}"]`);
+                    if (checkbox) checkbox.checked = true;
+                    const formGroup = createQuestionGroup(questionText);
+                    formContainer.appendChild(formGroup);
+                });
+            }
+
+            // Add drag-and-drop functionality to form items
+            function addDragAndDropHandlers() {
+                const draggableItems = document.querySelectorAll('.form-group');
+                draggableItems.forEach(item => {
+                    item.setAttribute("draggable", "true");
+                    item.addEventListener('dragstart', dragStart);
+                    item.addEventListener('dragover', dragOver);
+                    item.addEventListener('drop', drop);
+                    item.addEventListener('dragend', dragEnd);
+                });
+            }
+
+            // Drag event handlers
+            function dragStart(event) {
+                draggedItem = event.target;
+                event.dataTransfer.effectAllowed = 'move';
+                setTimeout(() => {
+                    draggedItem.style.display = 'none';
+                }, 0);
+            }
+
+            function dragOver(event) {
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'move';
+            }
+
+            function drop(event) {
+                event.preventDefault();
+                if (draggedItem !== this) {
+                    this.parentNode.insertBefore(draggedItem, this.nextSibling);
+                }
+            }
+
+            function dragEnd() {
+                draggedItem.style.display = 'block';
+                draggedItem = null;
+            }
+
+            // Add a custom question to the form
+            function addCustomQuestion() {
+                const customQuestion = document.getElementById('customQuestion').value.trim();
+                if (customQuestion && !manualQuestions.includes(customQuestion)) {
+                    manualQuestions.push(customQuestion);
+                    const formGroup = createQuestionGroup(customQuestion, true);
+                    document.getElementById('generatedForm').appendChild(formGroup);
+                    document.getElementById('customQuestion').value = ''; // Clear input field
+                    addDragAndDropHandlers();
+                }
+            }
+
+            // Create a question group (div) with label and input
+            function createQuestionGroup(question, isManual = false) {
+                const formGroup = document.createElement('div');
+                formGroup.className = 'form-group';
+                formGroup.draggable = true;
+                formGroup.dataset.question = question;
+
+                const label = document.createElement('label');
+                label.textContent = question;
+                formGroup.appendChild(label);
+
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = question;
+                input.placeholder = 'Enter details here';
+                formGroup.appendChild(input);
+
+                if (isManual) {
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'remove-btn';
+                    removeBtn.textContent = '-';
+                    removeBtn.onclick = () => removeQuestion(removeBtn);
+                    formGroup.appendChild(removeBtn);
+                }
+
+                addDragAndDropHandlers(); // Add drag-and-drop to the new element
+                return formGroup;
+            }
+
+
+            // Search function for filtering questions in the list
+            function filterQuestions() {
+                const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+                const questions = document.querySelectorAll('#questionsList label');
+                questions.forEach(question => {
+                    question.style.display = question.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+                });
+            }
+
+            // Function to handle logo upload
+            function uploadLogo() {
+                const logoInput = document.createElement('input');
+                logoInput.type = 'file';
+                logoInput.accept = 'image/*';
+                logoInput.onchange = (event) => {
+                    const file = event.target.files[0];
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.classList.add('uploaded-image');
+                        document.getElementById('logoBox').innerHTML = '';
+                        document.getElementById('logoBox').appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                };
+                logoInput.click();
+            }
+
+            function removeQuestionFromForm(questionText) {
+                const formContainer = document.getElementById('generatedForm');
+                const formGroups = formContainer.querySelectorAll('.form-group');
+                formGroups.forEach(group => {
+                    const label = group.querySelector('label');
+                    if (label && label.textContent === questionText) {
+                        formContainer.removeChild(group);
+                        addedQuestions = addedQuestions.filter(q => q !== questionText);
+                    }
+                });
+            }
+
+            // Create question group for dynamically added questions
+            function createQuestionGroup(question, isManual = false) {
+                const formGroup = document.createElement('div');
+                formGroup.className = 'form-group';
+                formGroup.draggable = true;
+                formGroup.dataset.question = question;
+
+                const label = document.createElement('label');
+                label.textContent = question;
+                formGroup.appendChild(label);
+
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = question;
+                input.placeholder = 'Enter details here';
+                formGroup.appendChild(input);
+
+                if (isManual) {
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'remove-btn';
+                    removeBtn.textContent = '-';
+                    removeBtn.onclick = () => removeQuestion(removeBtn);
+                    formGroup.appendChild(removeBtn);
+                }
+
+                addDragAndDropHandlers(); // Add drag-and-drop to the new element
+                return formGroup;
+            }
+
+            // Adding custom text question
+            function addCustomQuestion() {
+                const customQuestion = document.getElementById('customQuestion').value.trim();
+                if (customQuestion && !manualQuestions.includes(customQuestion)) {
+                    manualQuestions.push(customQuestion);
+                    const formGroup = createQuestionGroup(customQuestion, true);
+                    document.getElementById('generatedForm').appendChild(formGroup);
+                    document.getElementById('customQuestion').value = '';
+                    addDragAndDropHandlers();
+                }
+            }
+
+            // Custom radio question with options
+            function addCustomRadioQuestion() {
+                const customRadioQuestion = document.getElementById('customRadioQuestion').value.trim();
+                if (customRadioQuestion) {
+                    const radioOptions = prompt("Enter up to 5 radio options separated by commas (e.g., Yes,No):");
+                    if (radioOptions) {
+                        const options = radioOptions.split(",").map(option => option.trim()).slice(0, MAX_OPTIONS);
+                        const questionHtml = createRadioQuestionHtml(customRadioQuestion, options, true);
+                        manualQuestions.push(customRadioQuestion);
+                        document.getElementById('generatedForm').insertAdjacentHTML('beforeend', questionHtml);
+                        document.getElementById('customRadioQuestion').value = '';
+                        addDragAndDropHandlers();
+                    }
+                }
+            }
+
+            function createRadioQuestionHtml(question, options, isManual = false) {
+                const radioHtml = options.map(option => `<label><input type="radio" name="${question}" value="${option}"> ${option}</label>`).join(' ');
+                const removeBtnHtml = isManual ? `<button class="remove-btn" onclick="removeQuestion(this)">-</button>` : '';
+                return `<div class="form-group" draggable="true" data-question="${question}">
+                            <label>${question}</label>
+                            <div class="radio-group" style="display: flex; flex-direction: row; gap: 10px;">${radioHtml}</div>
+                            ${removeBtnHtml}
+                        </div>`;
+            }
+
+            // Custom checkbox group question with options
+            function addCustomCheckboxGroup() {
+                const customCheckboxQuestion = document.getElementById('customCheckboxQuestion').value.trim();
+                if (customCheckboxQuestion) {
+                    const checkboxOptions = prompt("Enter up to 5 checkbox options separated by commas (e.g., Option1,Option2):");
+                    if (checkboxOptions) {
+                        const options = checkboxOptions.split(",").map(option => option.trim()).slice(0, MAX_OPTIONS);
+                        const questionHtml = createCheckboxQuestionHtml(customCheckboxQuestion, options, true);
+                        manualQuestions.push(customCheckboxQuestion);
+                        document.getElementById('generatedForm').insertAdjacentHTML('beforeend', questionHtml);
+                        document.getElementById('customCheckboxQuestion').value = '';
+                        addDragAndDropHandlers();
+                    }
+                }
+            }
+
+            function createCheckboxQuestionHtml(question, options, isManual = false) {
+                const checkboxHtml = options.map(option => `<label><input type="checkbox" name="${question}" value="${option}"> ${option}</label>`).join(' ');
+                const removeBtnHtml = isManual ? `<button class="remove-btn" onclick="removeQuestion(this)">-</button>` : '';
+                return `<div class="form-group" draggable="true" data-question="${question}">
+                            <label>${question}</label>
+                            <div class="checkbox-group" style="display: flex; flex-direction: row; gap: 10px;">${checkboxHtml}</div>
+                            ${removeBtnHtml}
+                        </div>`;
+            }
+
+            // Custom dropdown question
+            function addCustomDropdownQuestion() {
+                const customDropdownQuestion = document.getElementById('customDropdownQuestion').value.trim();
+                if (customDropdownQuestion) {
+                    const dropdownOptions = prompt("Enter the dropdown options separated by commas (e.g., Option1,Option2):");
+                    if (dropdownOptions) {
+                        const options = dropdownOptions.split(",").map(option => option.trim());
+                        const questionHtml = getDropdownQuestionHtml(customDropdownQuestion, options, true);
+                        document.getElementById('generatedForm').insertAdjacentHTML('beforeend', questionHtml);
+                        document.getElementById('customDropdownQuestion').value = '';
+                        addDragAndDropHandlers();
+                    }
+                }
+            }
+
+            function getDropdownQuestionHtml(question, options, isManual = false) {
+                const dropdownHtml = `<select name="${question}">${options.map(option => `<option value="${option}">${option}</option>`).join('')}</select>`;
+                const removeBtnHtml = isManual ? `<button class="remove-btn" onclick="removeQuestion(this)">-</button>` : '';
+                return `<div class="form-group" draggable="true" data-question="${question}">
+                            <label>${question}</label>
+                            ${dropdownHtml}
+                            ${removeBtnHtml}
+                        </div>`;
+            }
+
+            function removeQuestion(button) {
+                const questionToRemove = button.closest('.form-group');
+                questionToRemove.remove();
+            }
+            async function downloadForm(format) {
+                const container = document.getElementById("formContainer");
+                const buttons = container.querySelectorAll("button");
+
+                // Temporarily hide all buttons
+                buttons.forEach((button) => {
+                    button.style.display = "none";
+                });
+
+                // Adjust styles for capturing
+                const originalMaxHeight = container.style.maxHeight;
+                const originalOverflowY = container.style.overflowY;
+                container.style.maxHeight = "none";
+                container.style.overflowY = "visible";
+
+                // Get the dynamic form title for the filename
+                const formTitle = document.getElementById("billTitle").innerText || "Form";
+
+                try {
+                    if (format === "png") {
+                        // Download as PNG
+                        const canvas = await html2canvas(container, {
+                            scrollY: 0,
+                            scale: 2,
+                            useCORS: true,
+                        });
+                        const dataUrl = canvas.toDataURL("image/png");
+                        const link = document.createElement("a");
+                        link.download = `${formTitle}.png`;
+                        link.href = dataUrl;
+                        link.click();
+                    } else if (format === "pdf") {
+                        const { jsPDF } = window.jspdf;
+
+                        const canvas = await html2canvas(container, {
+                            scrollY: 0,
+                            scale: 2,
+                            useCORS: true,
+                        });
+                        const imgData = canvas.toDataURL("image/png");
+
+                        const pdf = new jsPDF("p", "mm", "a4");
+                        const pdfWidth = pdf.internal.pageSize.getWidth();
+                        const pdfHeight = pdf.internal.pageSize.getHeight();
+
+                        const imgWidth = canvas.width;
+                        const imgHeight = canvas.height;
+                        const aspectRatio = imgWidth / imgHeight;
+                        const pageHeight = pdfWidth / aspectRatio;
+                        let positionY = 0;
+
+                        while (positionY < imgHeight) {
+                            const pageCanvas = document.createElement("canvas");
+                            pageCanvas.width = imgWidth;
+                            pageCanvas.height = Math.min(imgHeight - positionY, imgHeight);
+
+                            const pageCtx = pageCanvas.getContext("2d");
+                            pageCtx.drawImage(
+                                canvas,
+                                0,
+                                positionY,
+                                imgWidth,
+                                pageCanvas.height,
+                                0,
+                                0,
+                                imgWidth,
+                                pageCanvas.height
+                            );
+
+                            const pageImgData = pageCanvas.toDataURL("image/png");
+                            pdf.addImage(pageImgData, "PNG", 0, 0, pdfWidth, pageHeight);
+
+                            positionY += pageCanvas.height;
+
+                            if (positionY < imgHeight) {
+                                pdf.addPage();
+                            }
+                        }
+
+                        pdf.save(`${formTitle}.pdf`);
+                    }
+                } catch (error) {
+                    console.error("Error during download:", error);
+                    alert("An error occurred while downloading the form.");
+                } finally {
+                    // Restore original styles and button visibility
+                    container.style.maxHeight = originalMaxHeight;
+                    container.style.overflowY = originalOverflowY;
+                    buttons.forEach((button) => {
+                        button.style.display = "";
+                    });
+                }
+            }
+
+
+
+
+            function restoreStyles(container, buttons, maxHeight, overflowY) {
+                container.style.maxHeight = maxHeight;
+                container.style.overflowY = overflowY;
+                buttons.forEach((button) => {
+                    button.style.display = "";
+                });
+            }
+
+            // Function to save the form container as an image
+            // function saveAsImage() {
+            //     const container = document.getElementById('formContainer');
+            //     const buttons = container.querySelectorAll('button');
+
+            //     // Temporarily hide all buttons
+            //     buttons.forEach(button => {
+            //         button.style.display = 'none';
+            //     });
+
+            //     // Adjust styles for capturing
+            //     const originalMaxHeight = container.style.maxHeight;
+            //     const originalOverflowY = container.style.overflowY;
+            //     container.style.maxHeight = 'none';
+            //     container.style.overflowY = 'visible';
+
+            //     html2canvas(container, {
+            //         scrollY: 0,
+            //         scale: 2,
+            //         useCORS: true,
+            //     })
+            //         .then(canvas => {
+            //             // Restore original styles
+            //             container.style.maxHeight = originalMaxHeight;
+            //             container.style.overflowY = originalOverflowY;
+            //             buttons.forEach(button => {
+            //                 button.style.display = '';
+            //             });
+
+            //             // Generate and download the image
+            //             const dataUrl = canvas.toDataURL('image/png');
+            //             const link = document.createElement('a');
+            //             link.download = 'Form_With_Signature.png';
+            //             link.href = dataUrl;
+            //             link.click();
+            //         })
+            //         .catch(error => {
+            //             // Restore original styles in case of error
+            //             container.style.maxHeight = originalMaxHeight;
+            //             container.style.overflowY = originalOverflowY;
+            //             buttons.forEach(button => {
+            //                 button.style.display = '';
+            //             });
+            //             console.error('Error capturing image:', error);
+            //         });
+            // }
+
+            function addTable() {
+                // Get the form container for the current template
+                const formContainer = document.getElementById('generatedForm');
+
+                // Check if a table already exists for the selected template
+                if (!templateTables[selectedTemplate]) {
+                    // Create table section container
+                    const tableSection = document.createElement('div');
+                    tableSection.className = 'table-section';
+                    tableSection.id = `tableSection_${selectedTemplate}`; // Unique ID for each template's table
+
+                    // Table title and remove button
+                    tableSection.innerHTML = `
+            <h3>Customizable Table</h3>
+            <button class="icon-btn remove" onclick="removeTable()">-</button>
+            <table id="customTable_${selectedTemplate}">
+                <thead>
+                    <tr>
+                        <th><input type="text" placeholder="Column 1"></th>
+                        <th><input type="text" placeholder="Column 2"></th>
+                        <th><input type="text" placeholder="Column 3"></th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" placeholder="Enter value"></td>
+                        <td><input type="text" placeholder="Enter value"></td>
+                        <td><input type="text" placeholder="Enter value"></td>
+                        <td>
+                            <button class="icon-btn" onclick="addRow('${selectedTemplate}')">+</button>
+                            <button class="icon-btn remove" onclick="removeRow(this)">-</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="icon-btn" onclick="addColumn('${selectedTemplate}')">+ Add Column</button>
+        `;
+
+                    // Store table reference in templateTables
+                    templateTables[selectedTemplate] = tableSection;
+
+                    // Append table to the form container
+                    formContainer.appendChild(tableSection);
+                }
+
+                // Display the table section
+                templateTables[selectedTemplate].style.display = 'block';
+            }
+
+
+
+            function addRow(template) {
+                const table = document.getElementById(`customTable_${template}`).getElementsByTagName('tbody')[0];
+                const columns = table.rows[0] ? table.rows[0].cells.length - 1 : 3;
+                const newRow = table.insertRow();
+
+                for (let i = 0; i < columns; i++) {
+                    const newCell = newRow.insertCell(i);
+                    newCell.innerHTML = '<input type="text" placeholder="Enter value">';
+                }
+
+                const removeCell = newRow.insertCell(columns);
+                removeCell.innerHTML = '<button class="icon-btn remove" onclick="removeRow(this)">-</button>';
+            }
+
+
+            function addColumn(template) {
+                const table = document.getElementById(`customTable_${template}`);
+                const headerRow = table.getElementsByTagName('thead')[0].rows[0];
+                const rows = table.getElementsByTagName('tbody')[0].rows;
+
+                // Add header cell with an input
+                const newHeaderCell = document.createElement('th');
+                newHeaderCell.innerHTML = '<input type="text" placeholder="New Column">';
+                headerRow.insertBefore(newHeaderCell, headerRow.cells[headerRow.cells.length - 1]);
+
+                // Add input cells to each row
+                for (let i = 0; i < rows.length; i++) {
+                    const newCell = rows[i].insertCell(rows[i].cells.length - 1);
+                    newCell.innerHTML = '<input type="text" placeholder="Enter value">';
+                }
+            }
+
+
+            function removeRow(button) {
+                const row = button.closest('tr');
+                row.remove();
+                const table = document.getElementById('customTable').getElementsByTagName('tbody')[0];
+                if (table.rows.length === 0) {
+                    addRow();
+                }
+            }
+
+            function removeTable() {
+                const tableSection = templateTables[selectedTemplate];
+                if (tableSection) {
+                    tableSection.remove();
+                    delete templateTables[selectedTemplate]; // Remove the reference from templateTables
+                }
+            }
+
+
+
+            // Initialize drag and drop, title update, and question selections on load
+            document.addEventListener('DOMContentLoaded', () => {
+                addDragAndDropHandlers();
+                updateBillTitle();
+                // Restore any selections from localStorage
+                if (selectedTemplate && questionSelections[selectedTemplate]) {
+                    addedQuestions = questionSelections[selectedTemplate];
+                    renderSelectedQuestions();
+                }
+            });
+            function uploadSignature() {
+                const signatureInput = document.createElement("input");
+                signatureInput.type = "file";
+                signatureInput.accept = "image/*";
+                signatureInput.onchange = (event) => {
+                    const file = event.target.files[0];
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = document.createElement("img");
+                        img.src = e.target.result;
+                        img.classList.add("uploaded-image");
+                        document.getElementById("signatureBox").innerHTML = "";
+                        document.getElementById("signatureBox").appendChild(img);
+                        adjustFormPosition();
+                    };
+                    reader.readAsDataURL(file);
+                };
+                signatureInput.click();
+            }
+            function adjustFormPosition() {
+                const formContainer = document.getElementById("formContainer");
+                const signatureBox = document.getElementById("signatureBox");
+                formContainer.style.marginBottom = signatureBox.offsetHeight + 20 + "px";
+            }
+            function toggleDropdown() {
+                const dropdown = document.getElementById("downloadDropdown");
+                dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+            }
+
+            // Close the dropdown when clicking outside
+            document.addEventListener("click", (event) => {
+                const dropdown = document.getElementById("downloadDropdown");
+                const button = document.getElementById("downloadButton");
+                if (!button.contains(event.target)) {
+                    dropdown.style.display = "none";
+                }
+            });
+        </script>
+
+
+
+
+</body>
+
+</html>
